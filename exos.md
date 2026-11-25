@@ -10,3 +10,17 @@ result = {
     'solution2': ...
 }
 ```
+
+1.3. Ajouter une nouvelle fonction contact (POST /api/contact)
+    dont le but sera d'envoyer un email à l'administrateur de l'api (à vous)
+    parametres: 
+        - nom: str (max: 50)
+        - email: str email valide
+        - content: str (max: 1000)
+
+    info envoi mail
+    host: ssl0.ovh.net
+    port: 465
+    username: tf@khunly.be
+    password: test1234=
+    
