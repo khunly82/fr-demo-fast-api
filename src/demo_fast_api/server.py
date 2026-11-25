@@ -1,11 +1,11 @@
-from functools import cache
 import math
+from functools import cache
 from typing import Annotated
 
 import uvicorn
 from fastapi import Body, FastAPI, Query
 
-from demo_fast_api.dto.queries import EquationQuery
+from demo_fast_api.dto.requests import EquationRequest
 from demo_fast_api.dto.responses import EquationResponse
 
 app = FastAPI()
@@ -23,7 +23,7 @@ def fibo(nb: Annotated[int, Query(ge=0, lt=100)] = 0):
 
 
 @app.post('/api/equation', response_model=EquationResponse)
-def equation(dto: Annotated[EquationQuery, Body()]):
+def equation(dto: Annotated[EquationRequest, Body()]):
     a = dto.a
     b = dto.b
     c = dto.c
