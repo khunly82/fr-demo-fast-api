@@ -209,3 +209,243 @@ Le lancement peut etre configure avec :
 - le mode reload.
 
 Le mode reload redemarre automatiquement le serveur lorsque les fichiers du projet sont modifies.
+
+## 14. Base path de l'application
+
+FastAPI peut recevoir un `root_path`.
+
+Le root path represente le prefixe public commun a toutes les routes.
+Par exemple, avec `root_path="/api"` :
+
+- une route `/hello` est exposee publiquement sous `/api/hello` ;
+- une route `/contact` est exposee publiquement sous `/api/contact`.
+
+Cette notion est utile lorsqu'une application est placee derriere un proxy ou un reverse proxy.
+La configuration doit correspondre au chemin utilise par l'environnement de production.
+
+## 15. Validation avancee avec Pydantic
+
+Pydantic permet d'utiliser des contraintes plus precises que les types simples.
+
+Exemples de contraintes presentes dans les exercices :
+
+- `max_length=50` : longueur maximale d'une chaine ;
+- `max_length=1000` : longueur maximale du contenu d'un message ;
+- `EmailStr` : format d'une adresse e-mail valide ;
+- `PositiveFloat` : nombre flottant strictement positif ;
+- `NegativeFloat` : nombre flottant strictement negatif.
+
+Pour valider une adresse e-mail, Pydantic necessite un validateur adapte, comme `EmailStr`.
+
+Les contraintes peuvent etre combinees avec les annotations Python afin de produire une documentation claire et des erreurs de validation automatiques.
+
+## 16. E-mail, SMTP et FastAPI-Mail
+
+Pour envoyer un e-mail, une application se connecte generalement a un serveur SMTP.
+
+Les principaux parametres de configuration sont :
+
+- l'hote SMTP ;
+- le port ;
+- le nom d'utilisateur ;
+- le mot de passe ;
+- le type de chiffrement ;
+- l'adresse d'expedition.
+
+Le port 465 est souvent utilise avec une connexion SMTP directe utilisant SSL/TLS.
+
+FastAPI-Mail fournit des classes pour :
+
+- configurer la connexion SMTP ;
+- construire un message ;
+- definir les destinataires ;
+- definir l'objet ;
+- envoyer un contenu HTML ;
+- indiquer une adresse de reponse.
+
+## 17. Variables d'environnement
+
+Les informations sensibles ou propres a chaque environnement ne doivent pas etre inscrites directement dans le code.
+
+On utilise souvent des variables d'environnement pour separer :
+
+- les identifiants SMTP ;
+- les mots de passe ;
+- les cle API ;
+- les URLs de services externes ;
+- les ports et autres parametres de deploiement.
+
+Python peut lire ces valeurs avec `os.getenv(...)`.
+
+Le package `python-dotenv` permet de charger des variables depuis un fichier `.env` avec `load_dotenv()`.
+
+Un fichier `.env` ne doit pas etre versionne lorsqu'il contient des secrets.
+Il doit etre presente dans le depot sous forme d'exemple, par exemple `.env.example`, sans valeurs sensibles.
+
+## 18. Reponses HTTP et exceptions
+
+Une route peut preciser son code de reponse attendu avec `status_code`.
+
+Par exemple, une creation ou une operation ayant reussi peut utiliser `201`.
+
+Lorsqu'une erreur est connue, FastAPI permet de lever une `HTTPException`.
+
+Une exception HTTP contient notamment :
+
+- un code HTTP ;
+- un message ou un detail ;
+- eventuellement des informations supplementaires.
+
+Il est preferable de ne pas renvoyer au client des informations techniques sensibles.
+A la place, l'erreur peut etre enregistree dans un fichier de logs tout en renvoyant au client un message adapte.
+
+## 19. Programmation asynchrone
+
+FastAPI peut executer des fonctions synchrones ou asynchrones.
+
+Une fonction asynchrone est declaree avec `async def`.
+Une operation attendue est declenchee avec `await`.
+
+Cette approche est utile lorsqu'une operation attend une ressource externe :
+
+- reponse d'une API HTTP ;
+- envoi d'un e-mail ;
+- acces a une base de donnees ;
+- lecture ou ecriture de fichier.
+
+Pendant l'attente, le programme peut traiter d'autres operations.
+Cela evite de bloquer inutilement le serveur.
+
+## 20. Injection de dependances
+
+L'injection de dependances permet de fournir automatiquement a une route les objets dont elle a besoin.
+
+Dans FastAPI, elle est declaree avec `Depends(...)`.
+Le framework construit ou recupere la dependance, puis la transmet a la fonction.
+
+Cette methode permet :
+
+- de separer la route de la construction des services ;
+- de reutiliser un meme service ;
+- de faciliter les tests ;
+- d'appliquer une logique commune a plusieurs routes ;
+- de remplacer une implementation facilement.
+
+Dans l'exemple du formulaire de contact, le mailer est fourni comme dependance a la route.
+
+## 21. Infrastructure et services
+
+Une application peut etre organisee en plusieurs couches.
+
+La couche `dto` definit les donnees echangees.
+La couche `infrastructure` contient les outils techniques, comme l'envoi d'e-mails.
+La couche `server` expose les routes HTTP.
+
+Les services peuvent encapsuler des acces a des API externes :
+
+- `PokemonService` interroge PokeAPI ;
+- `OpenAIService` demande une description a OpenAI.
+
+Cette organisation evite que les routes melangent directement la logique HTTP, les transformations de donnees et les appels externes.
+
+## 22. Appels HTTP externes avec httpx
+
+`httpx` est un client HTTP pour Python.
+
+Il permet notamment :
+
+- d'envoyer des requetes GET, POST, PUT ou DELETE ;
+- d'utiliser les clients HTTP de maniere synchrone ou asynchrone ;
+- d'envoyer des en-tetes ;
+- de lire une reponse JSON ;
+- de gerer les erreurs HTTP.
+
+Pour plusieurs operations FastAPI, un client asynchrone est adapte.
+Il utilise `async def` et `await` pour ne pas bloquer le serveur pendant les appels externes.
+
+## 23. API PokeAPI
+
+PokeAPI est une API publique fournissant des informations sur les Pokemon.
+
+Pour obtenir un Pokemon, l'application peut interroger une route publique contenant son numero.
+
+Les informations utiles peuvent notamment etre :
+
+- le numero ;
+- le nom ;
+- la taille ;
+- le poids ;
+- d'autres donnees propres a la reponse PokeAPI.
+
+La taille et le poids fournis par l'API sont generalement des valeurs exprimees dans leurs propres unites.
+Une conversion peut etre necessaire pour les afficher en metres ou en kilogrammes.
+
+Le service doit transformer la reponse externe en un objet ou un DTO exploite par l'application.
+
+## 24. Appels a OpenAI
+
+OpenAIService peut etre charge de demander une description d'un Pokemon a un modele d'IA.
+
+Dans ce type d'integration :
+
+- les informations du Pokemon constituent le contexte ;
+- le nom ou les caracteristiques peuvent servir a construire une instruction ;
+- la reponse du modele est extraite et retournee par le service ;
+- la cle API doit rester cote serveur ;
+- la cle ne doit jamais etre exposee dans le navigateur ou le depots.
+
+Cette approche doit aussi prendre en compte les couts, les limites d'utilisation, les erreurs du service et les delais de reponse.
+
+## 25. DTO combinant plusieurs sources
+
+Lorsqu'une route combine plusieurs services, elle peut produire un nouveau DTO.
+
+Par exemple, le resultat d'un Pokemon peut contenir :
+
+- son numero ;
+- son nom ;
+- sa taille en metres ;
+- son poids en kilogrammes ;
+- sa description generee.
+
+Ce DTO constitue un contrat clair entre l'API FastAPI et ses clients.
+Il masque les structures parfois complexes des API externes.
+
+## 26. Parametres de chemin avances
+
+Dans une route comme `/pokemon/{numero}`, `numero` est un parametre de chemin.
+
+Ce parametre peut etre contraint avec une annotation FastAPI.
+Par exemple, il est possible d'imposer un entier positif ou borne.
+
+Les contraintes peuvent etre declarees avec `Query`, `Path` ou des types Pydantic selon le contexte.
+
+## 27. Corps contenant une liste
+
+Une route peut recevoir une liste d'objets ou une liste de nombres dans son corps JSON.
+
+Par exemple :
+
+- une liste de numeros de Pokemon ;
+- une limite maximale de dix elements ;
+- une verification d'unicite.
+
+Pydantic peut valider la longueur d'une liste avec une contrainte sur le modele ou sur le champ.
+
+Les contraintes d'unicite peuvent etre implementees avec un validateur Pydantic.
+Cela permet d'ecarter les doublons avant l'execution de la logique metier.
+
+## 28. Exécution concurrente avec asyncio.gather
+
+Lorsque plusieurs appels externes sont independants, ils peuvent etre executes de maniere concurrente.
+
+`asyncio.gather(...)` attend plusieurs operations asynchrones et retourne leurs resultats.
+
+Cela permet notamment d'interroger PokeAPI pour plusieurs Pokemon simultanement.
+
+La concurrence differencie deux notions :
+
+- parallelisme : plusieurs operations s'executent reellement en meme temps ;
+- concurrence : plusieurs operations peuvent progresser pendant leurs attentes.
+
+Avec des appels HTTP asynchrones, la concurrence permet souvent d'obtenir tous les resultats sans attendre chaque requete l'une apres l'autre.
