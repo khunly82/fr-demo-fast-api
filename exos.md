@@ -23,4 +23,31 @@ result = {
     port: 465
     username: tf@khunly.be
     password: test1234=
+
+1.4 Exo recap
+
+- Installer le package 'httpx'
+
+```sh
+uv add httpx
+```
+
+- Créer une classe PokemonService
+    - get_pokemon(numero: int)
+      *permet de se connecter à l'api pokeapi pour récupérer les infos d'un pokemon*
+- Créer une classe OpenAIService
+    - get_description(nom: str)
+      *permet de se connecter à openAI pour récupérer la description du pokemon*
+- Ajouter une fonctionnalité dans l'api FastApi
+    @app.get('/pokemon/{numero}')
+    - get_pokemon_full_info(numero: Annotated[int, ?])
+    Injecter les 2 services OpenAIService et PokemonService
+    pour renvoyer un dto {
+        numero,
+        nom,
+        taille en m du pokemon
+        poids en kg du pokemon
+        description d'openAI du pokemon
+    }
+
     
