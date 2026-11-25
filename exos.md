@@ -45,9 +45,14 @@ uv add httpx
     pour renvoyer un dto {
         numero,
         nom,
-        taille en m du pokemon
-        poids en kg du pokemon
+        taille en m du pokemon,
+        poids en kg du pokemon,
         description d'openAI du pokemon
     }
+
+Bonus: la fonctionnalité prend maintenant une liste de numero dans le body (max: 10).
+Vérifier que les numeros soient uniques
+renvoyer une liste d'infos
+penser à asyncio.gather() pour l'envoi des requetes concurrentielles
 
     
