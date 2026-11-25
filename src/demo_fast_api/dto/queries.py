@@ -2,6 +2,6 @@ from pydantic import BaseModel, Field
 
 
 class EquationQuery(BaseModel):
-    a: float = Field(lt=1000)
+    a: float = Field()
     b: float = Field()
     c: float = Field()
