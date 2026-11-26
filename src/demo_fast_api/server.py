@@ -34,7 +34,6 @@ def fibo(nb: Annotated[int, Query(ge=0, lt=100)] = 0):
         return nb
     return fibo(nb - 1) + fibo(nb - 2)
 
-
 @app.post('/equation', response_model=EquationResponse)
 def equation(dto: Annotated[EquationRequest, Body()]):
     a = dto.a

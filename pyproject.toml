@@ -12,6 +12,8 @@ dependencies = [
     "fastapi-mail>=1.6.8",
     "fastapi[standard]>=0.165.0",
     "httpx>=0.28.1",
+    "psycopg>=3.3.9",
+    "psycopg-binary>=3.3.9",
     "psycopg2>=2.9.13",
     "sqlalchemy>=2.1.9",
 ]
