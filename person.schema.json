@@ -1,0 +1,16 @@
+{
+    "required": ["nom", "prenom", "date_naissance", "titre", "competences"],
+    "properties": {
+        "nom": { "type": "string", "maxLength": 50 },
+        "prenom": { "type": "string", "maxLength": 50 },
+        "date_naissance": { "type": "string", "format": "date" },
+        "titre": { "type": "string", "enum": ["Me", "Mme", "Melle", "X"] },
+        "competences": {
+            "type": "array", "maxItems": 5, "minItems": 2,
+            "items": { "type": "string" }
+        },
+        "adresse": {
+            "required": ["rue", "ville"]
+        }
+    }
+}

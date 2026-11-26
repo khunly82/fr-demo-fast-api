@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 
 from demo_fast_api.infrastructure.mailer import Mailer
+from demo_fast_api.infrastructure.open_ai_service import OpenAIService
 from demo_fast_api.infrastructure.pokemon_service import PokemonService
 from demo_fast_api.models.pokemon import Pokemon
 
@@ -84,19 +85,24 @@ async def get_full_pokemon(
 @app.post('/pokemons')
 async def get_full_pokemons(
     numeros: Annotated[list[int], Body()],
-    pokemon_service: Annotated[PokemonService, Depends(PokemonService)]
+    pokemon_service: Annotated[PokemonService, Depends(PokemonService)],
+    open_ai_service: Annotated[OpenAIService, Depends(OpenAIService)],
 ):
     try:
         pokemons: list[Pokemon] = await asyncio.gather(*[
             pokemon_service.get_pokemon(numero)
             for numero in numeros
         ])
+        desc = await open_ai_service.get_pokemons_description([
+            p.name for p in pokemons
+        ])
         return [{
             'numero': p.id,
             'nom': p.name,
             'poids': p.weight / 10,
-            'taille': p.height / 10
-        } for p in pokemons]
+            'taille': p.height / 10,
+            'description': d
+        } for p, d in zip(pokemons, desc)]
         
     except ValueError as ex:
         print(str(ex))

@@ -1,0 +1,8 @@
+{
+    "$schema": "./person.schema.json",
+    "nom": "LY",
+    "prenom": "Khun",
+    "titre": "Me",
+    "date_naissance": "1982-05-06",
+    "competences": ["Python", "SQL"]
+}
