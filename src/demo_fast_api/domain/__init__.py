@@ -1,4 +1,13 @@
-from .espece import Espece
-from .type import Type
+# from .dresseur import Dresseur
+# from .espece import Espece
+# from .pokemon import Pokemon
+# from .type import Type
 
-__all__ = ['Espece', 'Type']
+# __all__ = ['Dresseur', 'Espece', 'Pokemon', 'Type']
+
+import importlib
+import pkgutil
+for _, module_name, _ in pkgutil.walk_packages(__path__):
+    module = importlib.import_module(f"{__name__}.{module_name}")
+    attrs = [attr for attr in dir(module) if not attr.startswith('_')]
+    globals().update({attr: getattr(module, attr) for attr in attrs})
