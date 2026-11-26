@@ -1,8 +1,11 @@
+import asyncio
 import os
 
 from dotenv import load_dotenv
 
 from demo_fast_api.infrastructure.mailer import Mailer
+from demo_fast_api.infrastructure.pokemon_service import PokemonService
+from demo_fast_api.models.pokemon import Pokemon
 
 load_dotenv()
 
@@ -11,7 +14,7 @@ from functools import cache
 from typing import Annotated
 
 import uvicorn
-from fastapi import Body, Depends, FastAPI, Query
+from fastapi import Body, Depends, FastAPI, Path, Query
 from fastapi.exceptions import HTTPException
 
 from demo_fast_api.dto.requests import ContactRequest, EquationRequest
@@ -60,6 +63,44 @@ async def contact(
     except Exception as error:
         # logger l'erreur dans un fichier de log
         raise HTTPException(detail=str(error), status_code=500)
+
+@app.get('/pokemon/{numero}')
+async def get_full_pokemon(
+    numero: Annotated[int, Path()],
+    pokemon_service: Annotated[PokemonService, Depends(PokemonService)]
+):
+    try:
+        pkmn: Pokemon = await pokemon_service.get_pokemon(numero)
+        return {
+            'numero': pkmn.id,
+            'nom': pkmn.name,
+            'poids': pkmn.weight / 10,
+            'taille': pkmn.height / 10
+        }
+    except ValueError as ex:
+        print(str(ex))
+        raise HTTPException(status_code=404)
+
+@app.post('/pokemons')
+async def get_full_pokemons(
+    numeros: Annotated[list[int], Body()],
+    pokemon_service: Annotated[PokemonService, Depends(PokemonService)]
+):
+    try:
+        pokemons: list[Pokemon] = await asyncio.gather(*[
+            pokemon_service.get_pokemon(numero)
+            for numero in numeros
+        ])
+        return [{
+            'numero': p.id,
+            'nom': p.name,
+            'poids': p.weight / 10,
+            'taille': p.height / 10
+        } for p in pokemons]
+        
+    except ValueError as ex:
+        print(str(ex))
+        raise HTTPException(status_code=404)
 
 def main():
     uvicorn.run('demo_fast_api.server:app', port=8080, reload=True)

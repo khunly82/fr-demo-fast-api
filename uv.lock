@@ -325,6 +325,7 @@ dependencies = [
     { name = "alembic" },
     { name = "fastapi", extra = ["standard"] },
     { name = "fastapi-mail" },
+    { name = "httpx" },
     { name = "psycopg2" },
     { name = "sqlalchemy" },
 ]
@@ -334,6 +335,7 @@ requires-dist = [
     { name = "alembic", specifier = ">=1.20.1" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.165.0" },
     { name = "fastapi-mail", specifier = ">=1.6.8" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "psycopg2", specifier = ">=2.9.13" },
     { name = "sqlalchemy", specifier = ">=2.1.9" },
 ]
