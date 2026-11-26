@@ -1,6 +1,13 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from demo_fast_api.domain.base import Base
+
+if TYPE_CHECKING:
+    from demo_fast_api.models.pokemon import Pokemon
 
 
 class Dresseur(Base):
@@ -10,3 +17,7 @@ class Dresseur(Base):
     ville: Mapped[str|None] = mapped_column()
     badges: Mapped[int] = mapped_column(default=0)
     actif: Mapped[bool] = mapped_column(default=True)
+
+    pokemons: Mapped[list[Pokemon]] = relationship(
+        secondary='dresseur_pokemon_association'
+    )
