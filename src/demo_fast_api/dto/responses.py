@@ -15,3 +15,7 @@ class TypeResponse(BaseModel):
     id: int
     nom: str
     couleur_hex: str
+
+class TypeDetailsResponse(TypeResponse):
+    description: str
+    nb_especes: int
