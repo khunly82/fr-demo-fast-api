@@ -19,5 +19,5 @@ class Dresseur(Base):
     actif: Mapped[bool] = mapped_column(default=True)
 
     pokemons: Mapped[list[Pokemon]] = relationship(
-        secondary='dresseur_pokemon_association'
+        secondary='dresseur_pokemon'
     )
