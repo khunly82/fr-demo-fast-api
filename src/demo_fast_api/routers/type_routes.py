@@ -34,18 +34,26 @@ async def get_all(
 
 @router.get('/{id}')
 def get_by_id(id: Annotated[int, Path()]):
+    """
+    Si l'id n'existe pas renvoyer un code 404
+    sinon renvoyer le nom, la couleur, la description, l'id
+    et le nombre d'especes possédant ce type dans la db
+    """
     pass
 
 @router.post('', status_code=201)
 def create():
+    """ajouter un type dans la db"""
     pass
 
 @router.put('/{id}')
 def update(id: Annotated[int, Path()]):
+    """mettre à jour un type dans la db"""
     pass
 
 @router.delete('/{id}')
 def delete(id: Annotated[int, Path()]):
+    """supprimer un type de la db, si des especes sont associées au type ne pas supprimer et renvoyer un code 400"""
     pass
 
 
